@@ -1,0 +1,8 @@
+#Thu Sep 24 11:24:47 BST 2009
+CLEAR_CONSOLE=false
+JJ_NATURE=true
+RUNTIME_JAR=-intern-
+RUNTIME_JTBJAR=-intern-
+SHOW_CONSOLE=true
+SUPPRESS_WARNINGS=true
+eclipse.preferences.version=1

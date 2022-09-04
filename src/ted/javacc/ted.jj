@@ -1,0 +1,74 @@
+/**
+ * JavaCC file for parsing
+ * the keywords of a filter.
+ * @author tvcsantos
+ */
+options {
+  JDK_VERSION = "1.5";
+  STATIC = false;
+}
+PARSER_BEGIN(Parser)
+package ted.javacc;
+public class Parser {}
+PARSER_END(Parser)
+
+SKIP :
+{
+ 	" "
+|	"\r"
+|	"\t"
+|	"\n"
+}
+TOKEN : /* OPERATORS */
+{
+	< NOT: "!" >
+| 	< AND: "&" >
+|	< OR: "|" >
+| 	< LPAR: "(" >
+| 	< RPAR: ")" >
+|	< STRING: (["A"-"Z", "a"-"z", "0"-"9", " "])+ >
+|	< EOL: ";;" >
+
+}
+
+IASTExpression Start() :
+{
+	IASTExpression e;
+}
+{
+	e = exp() ( < EOF > | < EOL > ) { return e; }
+}
+
+IASTExpression exp() :
+{
+  IASTExpression l;
+  IASTExpression r;
+}
+{
+	l = or() ( < OR >  r = or() { l = new ASTOr(l,r); })* 
+	{ return l; }
+}
+
+IASTExpression or() :
+{
+  IASTExpression l,r;
+}
+{
+
+    l = and() ( < AND > r = and() { l = new ASTAnd(l,r); } )*
+	{ return l; }      
+}
+
+IASTExpression and():
+{
+	IASTExpression e;
+	Token x;
+}
+{
+	< LPAR > e = exp() < RPAR > { return e; }
+	| < NOT > e = and() { e = new ASTNot(e); return e; }
+
+	| x = < STRING > { e = new ASTString(x.image.trim()); return e; }
+}
+
+
